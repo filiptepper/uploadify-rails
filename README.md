@@ -1,6 +1,6 @@
 # Uploadify::Rails
 
-TODO: Write a gem description
+Uploadify plugin for Ruby on Rails asset pipeline.
 
 ## Installation
 
@@ -18,7 +18,15 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Add to your JavaScript pipeline:
+
+    //= require uploadify
+
+Add to you CSS pipeline:
+
+    /*
+     *= require uploadify
+    */
 
 ## Contributing
 
