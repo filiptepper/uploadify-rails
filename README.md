@@ -28,6 +28,27 @@ Add to you CSS pipeline:
      *= require uploadify
     */
 
+You can configure options in an initializer.  For example:
+
+    Uploadify::Rails.configure do |config|
+      config.uploader        = 'uploads/create'
+      config.buttonText      = lambda { I18n.t('uploader.upload_file') }
+      config.queueID         = 'uploadify_queue_div'
+      config.onUploadSuccess = 'function(data, response){ alert(response); return true; }'
+    end
+
+For convenient access to your configuration, add to you ApplicationHelper:
+
+    include UploadifyRailsHelper
+
+You can then access the uploadifier options using `uploadify_rails_options` in a view.  For example:
+
+    <script type='text/javascript'>
+      $(document).ready(function() {
+        $('input#uploadify').uploadify(<%= uploadify_rails_options %>);
+      });
+    </script>
+
 ## Contributing
 
 1. Fork it
