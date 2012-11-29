@@ -32,7 +32,7 @@ module Uploadify
       }
       attr_accessor :formData
 
-      def options protection_token, cookies, auth_token
+      def uploadify_options protection_token, cookies, auth_token
         validate_options
         @option_hash = {}
         insert_options self.class.value_options
