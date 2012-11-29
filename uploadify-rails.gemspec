@@ -12,7 +12,6 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{Uploadify plugin for Ruby on Rails asset pipeline}
   gem.homepage      = "https://github.com/filiptepper/uploadify-rails/"
 
-  gem.add_dependency "flash_cookie_session", "~> 1.1"
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})

@@ -31,7 +31,22 @@ module Uploadify
       }
       attr_accessor :formData
 
-      def uploadify_options protection_token, cookies, auth_token
+      if defined?(FlashCookieSession)
+        def uploadify_options protection_token, cookies, auth_token
+          generate_option_hash do |option_hash|
+            option_hash[:formData] = required_form_data(protection_token, cookies, auth_token).merge(@formData || {})
+          end
+        end
+      else
+        def uploadify_options
+          generate_option_hash do |option_hash|
+            option_hash[:formData] = @formData unless @formData.nil?
+          end
+        end
+      end
+
+    private
+      def generate_option_hash &block
         validate_options
         @option_hash = {}
         insert_options self.class.value_options
@@ -39,14 +54,12 @@ module Uploadify
         insert_options self.class.callbacks.each do |k,v|
           @option_hash[k] = "_____#{k}____"
         end
-        additional_form_data = required_form_data(protection_token, cookies, auth_token)
-        @option_hash[:formData] = @formData.nil? ? additional_form_data : @formData.merge(additional_form_data)
+        yield @option_hash
         @json = @option_hash.to_json
         set_callbacks_without_quotes
         @json.html_safe
       end
 
-    private
       def validate_options
         raise "UploadifyRails.Configuration.formData must be a hash" unless @formData.is_a?(Hash) || @formData.nil?
         raise "UploadifyRails.Configuration.overrideEvents must be a Array" unless @overrideEvents.is_a?(Array) || @overrideEvents.nil?
