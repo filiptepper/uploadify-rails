@@ -5,8 +5,7 @@ module Uploadify
     end
 
     def self.configure
-      self.configuration ||= Configuration.new
-      yield(configuration)
+      yield self.configuration
     end
 
     class Configuration
@@ -80,10 +79,12 @@ module Uploadify
         keys.each do |option|
           value = get_value(option)
           value = value.call if value.is_a?(Proc)
-          if block_given?
-            yield option, value unless value.nil?
-          else
-            @option_hash[option] = value unless value.nil?
+          unless value.nil?
+            if block_given?
+              yield option, value
+            else
+              @option_hash[option] = value
+            end
           end
         end
       end
