@@ -8,6 +8,8 @@ module Uploadify
       yield self.configuration
     end
 
+    class ConfigurationError < StandardError; end
+
     class Configuration
     private
       def self.callbacks
@@ -77,16 +79,16 @@ module Uploadify
       end
 
       def validate_options
-        raise "UploadifyRails.Configuration.formData must be a hash" unless @formData.is_a?(Hash) || @formData.nil?
-        raise "UploadifyRails.Configuration.overrideEvents must be a Array" unless @overrideEvents.is_a?(Array) || @overrideEvents.nil?
-        raise "UploadifyRails.Configuration.progressData must be either :percentage or :speed" unless @progressData.nil? || [:percentage, :speed].include?(@progressData.to_sym)
-        raise "UploadifyRails.Configuration.buttonCursor must be either :arrow or :hand" unless @buttonCursor.nil? || [:arrow, :hand].include?(@buttonCursor.to_sym)
-        raise 'Please set UploadifyRails.Configuration.uploader to the route of the uploading action.  Run `rake routes` to find the correct value' if @uploader.nil?
+        raise ConfigurationError, "UploadifyRails.Configuration.formData must be a hash" unless @formData.is_a?(Hash) || @formData.nil?
+        raise ConfigurationError, "UploadifyRails.Configuration.overrideEvents must be a Array" unless @overrideEvents.is_a?(Array) || @overrideEvents.nil?
+        raise ConfigurationError, "UploadifyRails.Configuration.progressData must be either :percentage or :speed" unless @progressData.nil? || [:percentage, :speed].include?(@progressData.to_sym)
+        raise ConfigurationError, "UploadifyRails.Configuration.buttonCursor must be either :arrow or :hand" unless @buttonCursor.nil? || [:arrow, :hand].include?(@buttonCursor.to_sym)
+        raise ConfigurationError, 'Please set UploadifyRails.Configuration.uploader to the route of the uploading action.  Run `rake routes` to find the correct value' if @uploader.nil?
         self.class.bool_options.each { |bool_option|
-          raise "UploadifyRails.Configuration.#{bool_option} must be either 'true' or 'false'" unless [true, false, nil].include?(get_value(bool_option))
+          raise ConfigurationError, "UploadifyRails.Configuration.#{bool_option} must be either 'true' or 'false'" unless [true, false, nil].include?(get_value(bool_option))
         }
         self.class.callbacks.each { |callback|
-          raise "UploadifyRails.Configuration.#{callback} must be either 'true' or 'false'\nRun 'rake uploadify_rails:coffee' to generate a coffeescript file and define callbacks there" unless [true, false, nil].include?(get_value(callback))
+          raise ConfigurationError, "UploadifyRails.Configuration.#{callback} must be either 'true' or 'false'\nRun 'rake uploadify_rails:coffee' to generate a coffeescript file and define callbacks there" unless [true, false, nil].include?(get_value(callback))
         }
       end
       def args_for callback
