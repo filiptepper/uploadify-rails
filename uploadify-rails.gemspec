@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["filip@tepper.pl"]
   gem.description   = %q{Uploadify plugin for Ruby on Rails asset pipeline}
   gem.summary       = %q{Uploadify plugin for Ruby on Rails asset pipeline}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/filiptepper/uploadify-rails/"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
