@@ -34,8 +34,10 @@ You can configure options in an initializer.  For example:
       config.uploader        = 'uploads/create'
       config.buttonText      = lambda { I18n.t('uploader.upload_file') }
       config.queueID         = 'uploadify_queue_div'
-      config.onUploadSuccess = 'function(data, response){ alert(response); return true; }'
+      config.onUploadSuccess = true
     end
+
+When you define any callbacks as true, you should define a function 'window.UploadifyRails.#{callback}' in your javascript asset files with the appropriate arguments.
 
 For convenient access to your configuration, add to you ApplicationHelper:
 

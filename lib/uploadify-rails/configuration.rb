@@ -19,6 +19,22 @@ module Uploadify
       def self.bool_options
         [:auto, :debug, :multi, :preventCaching, :removeCompleted, :requeueErrors]
       end
+      def self.callback_args
+        @@callback_definitions ||= {
+          :onCancel => [:file],
+          :onClearQueue => [:queueItemCount],
+          :onDialogClose => [:queueData],
+          :onInit => [:instance],
+          :onQueueComplete => [:queueData],
+          :onSelect => [:file],
+          :onSelectError => [:file, :errorCode, :errorMsg],
+          :onUploadComplete => [:file],
+          :onUploadError => [:file, :errorCode, :errorMsg, :errorString],
+          :onUploadProgress => [:file, :bytesUploaded, :bytesTotal, :totalBytesUploaded, :totalBytesTotal],
+          :onUploadStart => [:file],
+          :onUploadSuccess => [:file, :data, :response]
+        }
+      end
     public
       self.callbacks.each { |option|
         attr_accessor option
@@ -52,7 +68,7 @@ module Uploadify
         insert_options self.class.value_options
         insert_options self.class.bool_options
         insert_options self.class.callbacks.each do |k,v|
-          @option_hash[k] = "_____#{k}____"
+          @option_hash[k] = "_____#{k}____" if v
         end
         yield @option_hash
         @json = @option_hash.to_json
@@ -69,10 +85,20 @@ module Uploadify
         self.class.bool_options.each { |bool_option|
           raise "UploadifyRails.Configuration.#{bool_option} must be either 'true' or 'false'" unless [true, false, nil].include?(get_value(bool_option))
         }
+        self.class.callbacks.each { |callback|
+          raise "UploadifyRails.Configuration.#{callback} must be either 'true' or 'false'" unless [true, false, nil].include?(get_value(callback))
+        }
+      end
+      def args_for callback
+        args = self.class.callback_args
+        args.key?(callback) ? args[callback].join(',') : ''
       end
       def set_callbacks_without_quotes
         insert_options self.class.callbacks.each do |k,v|
-          @json.gsub!("\"#{@option_hash[k]}\"", v)
+          if v
+            args = args_for k
+            @json.gsub!("\"#{@option_hash[k]}\"", "function(#{args}) { window.UploadifyRails.#{k}(#{args}); return true;}")
+          end
         end
       end
       def get_value option
