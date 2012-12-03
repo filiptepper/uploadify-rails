@@ -86,7 +86,7 @@ module Uploadify
           raise "UploadifyRails.Configuration.#{bool_option} must be either 'true' or 'false'" unless [true, false, nil].include?(get_value(bool_option))
         }
         self.class.callbacks.each { |callback|
-          raise "UploadifyRails.Configuration.#{callback} must be either 'true' or 'false'" unless [true, false, nil].include?(get_value(callback))
+          raise "UploadifyRails.Configuration.#{callback} must be either 'true' or 'false'\nRun 'rake uploadify_rails:coffee' to generate a coffeescript file and define callbacks there" unless [true, false, nil].include?(get_value(callback))
         }
       end
       def args_for callback
